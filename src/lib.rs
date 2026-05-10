@@ -182,13 +182,14 @@ impl AssistantMessageParser {
             .iter()
             .map(|name| (format!("<{}>", name), name.clone()))
             .collect();
+        let default_tool_prefixes = tool_prefixes(&tool_names);
 
         Self {
             tool_names,
             tool_param_names,
             tool_opening_tags,
             param_opening_tags,
-            default_tool_prefixes: default_tool_prefixes(),
+            default_tool_prefixes,
             max_accumulator_size: Self::MAX_ACCUMULATOR_SIZE,
             max_param_length: Self::MAX_PARAM_LENGTH,
             content_blocks: Vec::new(),
@@ -477,8 +478,12 @@ pub fn default_tool_param_names() -> Vec<String> {
 }
 
 pub fn default_tool_prefixes() -> Vec<String> {
+    tool_prefixes(&default_tool_names())
+}
+
+fn tool_prefixes(tool_names: &[String]) -> Vec<String> {
     let mut prefixes = Vec::new();
-    for (tool_name, _) in DEFAULT_TOOLS {
+    for tool_name in tool_names {
         for end in 0..=tool_name.len() {
             prefixes.push(format!("<{}", &tool_name[..end]));
         }
