@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1050" font-family="sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="arr-g" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#059669"/>
+    </marker>
+    <marker id="arr-r" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+    <marker id="arr-b" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-p" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7c3aed"/>
+    </marker>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <filter id="sh" x="-3%" y="-3%" width="106%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <filter id="shc" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <rect width="1100" height="1050" fill="#f8fafc" rx="8"/>
+
+  <!-- 标题 -->
+  <rect x="0" y="0" width="1100" height="52" fill="url(#hdr)" rx="8"/>
+  <rect x="0" y="26" width="1100" height="26" fill="url(#hdr)"/>
+  <text x="550" y="32" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">AssistantMessageParser — 隐式状态机</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态0: IDLE                                                  -->
+  <!-- ============================================================ -->
+  <rect x="60" y="75" width="280" height="175" rx="12" fill="#f1f5f9" stroke="#64748b" stroke-width="2.5" filter="url(#shc)"/>
+  <rect x="60" y="75" width="280" height="32" rx="12" fill="#64748b"/>
+  <rect x="60" y="93" width="280" height="14" fill="#64748b"/>
+  <text x="200" y="96" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">状态 0: 空闲 / 起始</text>
+
+  <rect x="72" y="118" width="256" height="24" rx="4" fill="#e2e8f0"/>
+  <text x="80" y="135" fill="#475569" font-size="10" font-weight="bold">状态变量</text>
+  <text x="80" y="157" fill="#64748b" font-size="10">current_text_block_index = None</text>
+  <text x="80" y="173" fill="#64748b" font-size="10">current_tool_block_index = None</text>
+  <text x="80" y="189" fill="#64748b" font-size="10">current_param_name = None</text>
+  <text x="80" y="209" fill="#94a3b8" font-size="10">accumulator = ""  |  content_blocks = []</text>
+  <text x="80" y="229" fill="#64748b" font-size="10">iter_idx = 0</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态1: IN TEXT                                               -->
+  <!-- ============================================================ -->
+  <rect x="60" y="350" width="280" height="175" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2.5" filter="url(#shc)"/>
+  <rect x="60" y="350" width="280" height="32" rx="12" fill="#059669"/>
+  <rect x="60" y="368" width="280" height="14" fill="#059669"/>
+  <text x="200" y="371" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">状态 1: 处理文本中</text>
+
+  <rect x="72" y="393" width="256" height="24" rx="4" fill="#d1fae5"/>
+  <text x="80" y="410" fill="#065f46" font-size="10" font-weight="bold">状态变量</text>
+  <text x="80" y="432" fill="#047857" font-size="10">current_text_block_index = Some(idx)</text>
+  <text x="80" y="448" fill="#047857" font-size="10">current_tool_block_index = None</text>
+  <text x="80" y="464" fill="#047857" font-size="10">current_param_name = None</text>
+  <text x="80" y="484" fill="#047857" font-size="10">活跃 content_blocks[idx] = TextContent</text>
+  <text x="80" y="504" fill="#94a3b8" font-size="10">partial = true  ─  从累加器提取文本</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态2: IN TOOL (无活跃参数)                                   -->
+  <!-- ============================================================ -->
+  <rect x="670" y="75" width="350" height="215" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" filter="url(#shc)"/>
+  <rect x="670" y="75" width="350" height="32" rx="12" fill="#2563eb"/>
+  <rect x="670" y="93" width="350" height="14" fill="#2563eb"/>
+  <text x="845" y="96" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">状态 2: 处理工具中（无活跃参数）</text>
+
+  <rect x="682" y="118" width="326" height="24" rx="4" fill="#dbeafe"/>
+  <text x="690" y="135" fill="#1e40af" font-size="10" font-weight="bold">状态变量</text>
+  <text x="690" y="157" fill="#3b82f6" font-size="10">current_text_block_index = None</text>
+  <text x="690" y="173" fill="#3b82f6" font-size="10">current_tool_block_index = Some(idx)</text>
+  <text x="690" y="189" fill="#3b82f6" font-size="10">current_param_name = None</text>
+  <text x="690" y="209" fill="#3b82f6" font-size="10">活跃 content_blocks[idx] = ToolUse</text>
+  <text x="690" y="225" fill="#94a3b8" font-size="10">partial = true  ─  从累加器提取工具内容</text>
+  <text x="690" y="245" fill="#94a3b8" font-size="10">current_tool_use_start_index 标记起点</text>
+  <text x="690" y="265" fill="#94a3b8" font-size="10">持续扫描 &lt;参数名&gt; 和 &lt;/工具名&gt;</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态3: IN TOOL PARAMETER                                      -->
+  <!-- ============================================================ -->
+  <rect x="670" y="380" width="350" height="215" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2.5" filter="url(#shc)"/>
+  <rect x="670" y="380" width="350" height="32" rx="12" fill="#d97706"/>
+  <rect x="670" y="398" width="350" height="14" fill="#d97706"/>
+  <text x="845" y="401" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">状态 3: 处理工具参数中</text>
+
+  <rect x="682" y="423" width="326" height="24" rx="4" fill="#fef3c7"/>
+  <text x="690" y="440" fill="#92400e" font-size="10" font-weight="bold">状态变量</text>
+  <text x="690" y="462" fill="#b45309" font-size="10">current_text_block_index = None</text>
+  <text x="690" y="478" fill="#b45309" font-size="10">current_tool_block_index = Some(idx)</text>
+  <text x="690" y="494" fill="#b45309" font-size="10">current_param_name = Some("参数名")</text>
+  <text x="690" y="514" fill="#b45309" font-size="10">活跃 content_blocks[idx] = ToolUse</text>
+  <text x="690" y="530" fill="#94a3b8" font-size="10">partial = true</text>
+  <text x="690" y="550" fill="#94a3b8" font-size="10">current_param_value_start_index 标记起点</text>
+  <text x="690" y="570" fill="#94a3b8" font-size="10">持续检测 &lt;/参数名&gt; 闭合标签</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态转换箭头                                                   -->
+  <!-- ============================================================ -->
+
+  <!-- IDLE → TEXT: 任意字符（非工具标签） -->
+  <path d="M 340 140 Q 400 200 200 240 Q 180 260 160 310" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#arr-g)"/>
+  <text x="420" y="205" fill="#059669" font-size="10" font-weight="bold">任意字符（非工具标签）</text>
+  <text x="420" y="219" fill="#059669" font-size="9">→ process_text() 创建 TextContent</text>
+
+  <!-- IDLE → TOOL: 累加器结尾匹配 <工具名> -->
+  <path d="M 340 130 Q 500 45 650 130" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#arr-b)"/>
+  <text x="510" y="85" fill="#2563eb" font-size="10" font-weight="bold">累加器尾部匹配 &lt;工具名&gt;</text>
+  <text x="510" y="99" fill="#2563eb" font-size="9">→ try_start_tool_use() 创建 ToolUse</text>
+
+  <!-- TEXT → TOOL: 在文本中检测到工具标签 -->
+  <path d="M 340 420 Q 490 370 490 280 Q 490 210 650 190" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#arr-b)"/>
+  <text x="500" y="300" fill="#2563eb" font-size="10" font-weight="bold">累加器尾部匹配 &lt;工具名&gt;</text>
+  <text x="500" y="314" fill="#2563eb" font-size="9">→ try_start_tool_use(): 关闭文本块 (take)</text>
+  <text x="500" y="328" fill="#2563eb" font-size="9">  剥离末尾部分标签前缀</text>
+
+  <!-- TEXT → TEXT: 自环 -->
+  <path d="M 60 440 Q 30 440 30 470 Q 30 500 60 500" stroke="#059669" stroke-width="1.5" fill="none" marker-end="url(#arr-g)"/>
+  <text x="18" y="475" fill="#059669" font-size="9">任意字符</text>
+
+  <!-- TOOL → TOOL PARAM: 检测到参数开标签 -->
+  <path d="M 670 230 Q 620 260 620 380 Q 620 480 650 480" stroke="#d97706" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="590" y="340" fill="#d97706" font-size="10" font-weight="bold">&lt;参数名&gt; 开标签匹配</text>
+  <text x="590" y="354" fill="#d97706" font-size="9">→ process_current_tool()</text>
+  <text x="590" y="368" fill="#d97706" font-size="9">  设置 current_param_name</text>
+
+  <!-- TOOL PARAM → TOOL: 参数闭合 -->
+  <path d="M 1020 480 Q 1060 480 1060 340 Q 1060 240 1040 210" stroke="#2563eb" stroke-width="2.5" fill="none" marker-end="url(#arr-b)"/>
+  <text x="1045" y="360" fill="#2563eb" font-size="10" font-weight="bold">&lt;/参数名&gt; 闭合标签匹配</text>
+  <text x="1045" y="374" fill="#2563eb" font-size="9">→ process_current_param()</text>
+  <text x="1045" y="388" fill="#2563eb" font-size="9">  normalize 后存入 ToolUse.params</text>
+
+  <!-- TOOL → IDLE: 工具闭合 -->
+  <path d="M 670 160 Q 500 100 350 160" stroke="#dc2626" stroke-width="2.5" fill="none" marker-end="url(#arr-r)"/>
+  <text x="430" y="115" fill="#dc2626" font-size="10" font-weight="bold">&lt;/工具名&gt; 闭合标签匹配</text>
+  <text x="430" y="129" fill="#dc2626" font-size="9">→ process_current_tool()</text>
+  <text x="430" y="143" fill="#dc2626" font-size="9">  partial = false → 清除 current_tool_block_index</text>
+
+  <!-- TOOL PARAM → IDLE (参数紧随工具一起关闭) -->
+  <path d="M 670 480 Q 490 480 360 450" stroke="#dc2626" stroke-width="2" fill="none" stroke-dasharray="8,5" marker-end="url(#arr-r)"/>
+  <text x="440" y="495" fill="#dc2626" font-size="9">&lt;/参数名&gt; → &lt;/工具名&gt; 连续关闭</text>
+
+  <!-- TOOL PARAM 被遗弃 → TOOL -->
+  <path d="M 670 595 Q 490 640 360 600" stroke="#7c3aed" stroke-width="2" fill="none" stroke-dasharray="8,5" marker-end="url(#arr-p)"/>
+  <text x="440" y="635" fill="#7c3aed" font-size="9">参数值超 100 KiB → 静默丢弃</text>
+  <text x="440" y="649" fill="#7c3aed" font-size="9">current_param_name ← None, 回退至 状态2</text>
+
+  <!-- reset: any → IDLE -->
+  <path d="M 690 350 Q 560 350 560 200 Q 560 130 360 130" stroke="#475569" stroke-width="1.5" fill="none" stroke-dasharray="6,4"/>
+  <text x="570" y="240" fill="#64748b" font-size="9">reset() — 全部状态清空回 状态0</text>
+
+  <!-- ============================================================ -->
+  <!-- 状态转移表                                                      -->
+  <!-- ============================================================ -->
+  <rect x="50" y="680" width="1000" height="350" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="70" y="708" fill="#334155" font-size="14" font-weight="bold">每字符优先级调度表（process_chunk 内层循环，源码 232–246 行）</text>
+
+  <line x1="70" y1="716" x2="1030" y2="716" stroke="#cbd5e1"/>
+
+  <!-- 表头 -->
+  <rect x="70" y="724" width="80" height="30" rx="4" fill="#475569"/>
+  <text x="110" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">优先级</text>
+  <rect x="155" y="724" width="280" height="30" rx="4" fill="#475569"/>
+  <text x="295" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">判断条件</text>
+  <rect x="440" y="724" width="220" height="30" rx="4" fill="#475569"/>
+  <text x="550" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">执行动作</text>
+  <rect x="665" y="724" width="160" height="30" rx="4" fill="#475569"/>
+  <text x="745" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">下一状态</text>
+  <rect x="830" y="724" width="90" height="30" rx="4" fill="#475569"/>
+  <text x="875" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">源码行号</text>
+  <rect x="925" y="724" width="100" height="30" rx="4" fill="#475569"/>
+  <text x="975" y="744" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">关键函数</text>
+
+  <!-- 行1: 优先级① -->
+  <rect x="70" y="758" width="80" height="32" rx="4" fill="#dbeafe"/>
+  <text x="110" y="779" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="bold">①</text>
+  <rect x="155" y="758" width="280" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="295" y="779" text-anchor="middle" fill="#475569" font-size="10">tool_block_index &amp;&amp; param_name 均 is_some</text>
+  <rect x="440" y="758" width="220" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="550" y="779" text-anchor="middle" fill="#475569" font-size="10">process_current_param() → 若返回 true 则 continue</text>
+  <rect x="665" y="758" width="160" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="745" y="779" text-anchor="middle" fill="#475569" font-size="10">状态3 或 回退至状态2</text>
+  <rect x="830" y="758" width="90" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="875" y="779" text-anchor="middle" fill="#475569" font-size="10">232</text>
+  <rect x="925" y="758" width="100" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="975" y="779" text-anchor="middle" fill="#475569" font-size="10">第306行</text>
+
+  <!-- 行2: 优先级② -->
+  <rect x="70" y="794" width="80" height="32" rx="4" fill="#dbeafe"/>
+  <text x="110" y="815" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="bold">②</text>
+  <rect x="155" y="794" width="280" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="295" y="815" text-anchor="middle" fill="#475569" font-size="10">tool_block_index is_some</text>
+  <rect x="440" y="794" width="220" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="550" y="815" text-anchor="middle" fill="#475569" font-size="10">process_current_tool() → continue</text>
+  <rect x="665" y="794" width="160" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="745" y="815" text-anchor="middle" fill="#475569" font-size="10">状态2 / 3 或 状态0</text>
+  <rect x="830" y="794" width="90" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="875" y="815" text-anchor="middle" fill="#475569" font-size="10">238</text>
+  <rect x="925" y="794" width="100" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="975" y="815" text-anchor="middle" fill="#475569" font-size="10">第329行</text>
+
+  <!-- 行3: 优先级③ -->
+  <rect x="70" y="830" width="80" height="32" rx="4" fill="#dbeafe"/>
+  <text x="110" y="851" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="bold">③</text>
+  <rect x="155" y="830" width="280" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="295" y="851" text-anchor="middle" fill="#475569" font-size="10">累加器尾部匹配 &lt;工具名&gt; 且工具名合法</text>
+  <rect x="440" y="830" width="220" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="550" y="851" text-anchor="middle" fill="#475569" font-size="10">try_start_tool_use()</text>
+  <rect x="665" y="830" width="160" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="745" y="851" text-anchor="middle" fill="#475569" font-size="10">状态2</text>
+  <rect x="830" y="830" width="90" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="875" y="851" text-anchor="middle" fill="#475569" font-size="10">243</text>
+  <rect x="925" y="830" width="100" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="975" y="851" text-anchor="middle" fill="#475569" font-size="10">第361行</text>
+
+  <!-- 行4: 优先级④ -->
+  <rect x="70" y="866" width="80" height="32" rx="4" fill="#dbeafe"/>
+  <text x="110" y="887" text-anchor="middle" fill="#1e40af" font-size="12" font-weight="bold">④</text>
+  <rect x="155" y="866" width="280" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="295" y="887" text-anchor="middle" fill="#475569" font-size="10">以上全不满足（兜底）</text>
+  <rect x="440" y="866" width="220" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="550" y="887" text-anchor="middle" fill="#475569" font-size="10">process_text(current_position)</text>
+  <rect x="665" y="866" width="160" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="745" y="887" text-anchor="middle" fill="#475569" font-size="10">状态1</text>
+  <rect x="830" y="866" width="90" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="875" y="887" text-anchor="middle" fill="#475569" font-size="10">244</text>
+  <rect x="925" y="866" width="100" height="32" rx="4" fill="#f1f5f9"/>
+  <text x="975" y="887" text-anchor="middle" fill="#475569" font-size="10">第388行</text>
+
+  <!-- 关键行为摘要 -->
+  <rect x="70" y="908" width="960" height="110" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="85" y="930" fill="#334155" font-size="12" font-weight="bold">关键行为说明</text>
+
+  <text x="85" y="952" fill="#475569" font-size="10">▸ 参数闭合 (①): 检测到 &lt;/参数名&gt; → normalize 值 → 存入 ToolUse.params → current_param_name ← None → 回到 状态2</text>
+  <text x="85" y="970" fill="#475569" font-size="10">▸ 工具闭合 (②): 检测到 &lt;/工具名&gt; → ToolUse.partial ← false → current_tool_block_index ← None → 回到 状态0</text>
+  <text x="85" y="988" fill="#475569" font-size="10">▸ 工具开启 (③): try_start_tool_use() 会用 take() 关闭文本块 → current_text_block_index ← None → 进入 状态2</text>
+  <text x="85" y="1006" fill="#475569" font-size="10">▸ 参数超限: process_current_param 返回 false → 不回 continue → 穿过 if 链 → 可能进入③/④ 分支（作为普通字符处理）</text>
+
+  <text x="550" y="1035" text-anchor="middle" fill="#94a3b8" font-size="10">源码: /Users/jialiangtang/code/assistant-message-parser-rs/src/lib.rs</text>
+</svg>

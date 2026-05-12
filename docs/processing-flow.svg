@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1250" font-family="sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#059669"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#dc2626"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97706"/>
+    </marker>
+    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="entry" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="loop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="ret" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="panic" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <filter id="sh" x="-2%" y="-3%" width="104%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+    <filter id="sh-card" x="-2%" y="-2%" width="104%" height="108%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1100" height="1250" fill="#f8fafc" rx="8"/>
+
+  <!-- 标题栏 -->
+  <rect x="0" y="0" width="1100" height="52" fill="url(#hdr)" rx="8"/>
+  <rect x="0" y="26" width="1100" height="26" fill="url(#hdr)"/>
+  <text x="550" y="32" text-anchor="middle" fill="#fff" font-size="18" font-weight="bold">AssistantMessageParser — 处理流程图</text>
+
+  <!-- ============================================================ -->
+  <!-- 入口：process_chunk                                          -->
+  <!-- ============================================================ -->
+  <rect x="300" y="75" width="500" height="48" rx="10" fill="url(#entry)" filter="url(#sh)"/>
+  <text x="550" y="104" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">入口: process_chunk(chunk: &amp;str)</text>
+
+  <line x1="550" y1="123" x2="550" y2="155" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步骤0：累加器大小检查 -->
+  <rect x="280" y="155" width="540" height="38" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="290" y="178" fill="#334155" font-size="12">步骤 0: 检查累加器容量 — accumulator.len() + chunk.len() ≤ 1 MiB</text>
+  <text x="290" y="200" fill="#94a3b8" font-size="10" font-style="italic">（源码: src/lib.rs 第 224 行）</text>
+
+  <!-- 容量超限分支 -->
+  <line x1="280" y1="174" x2="170" y2="174" stroke="#dc2626" stroke-width="1.5"/>
+  <line x1="170" y1="174" x2="170" y2="240" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+  <text x="220" y="166" fill="#dc2626" font-size="10" font-weight="bold">超限</text>
+
+  <rect x="50" y="240" width="240" height="38" rx="8" fill="url(#panic)" filter="url(#sh)"/>
+  <text x="170" y="263" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">返回 Err(MessageTooLarge)</text>
+
+  <!-- ↓ -->
+  <line x1="550" y1="193" x2="550" y2="230" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步骤1：字符循环 -->
+  <rect x="260" y="230" width="580" height="42" rx="10" fill="url(#loop)" filter="url(#sh)"/>
+  <text x="550" y="249" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">步骤 1: 逐个字符迭代 — for ch in chunk.chars() { ... }</text>
+  <text x="550" y="265" text-anchor="middle" fill="#ddd6fe" font-size="10" font-style="italic">（源码: src/lib.rs 第 228 行）</text>
+
+  <!-- ↓ -->
+  <line x1="550" y1="272" x2="550" y2="310" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 步骤2：记录位置并推入累加器 -->
+  <rect x="300" y="310" width="500" height="38" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="310" y="333" fill="#334155" font-size="12">步骤 2: 记录当前位置 → accumulator.push(ch) 推入累加器</text>
+
+  <!-- ↓ -->
+  <line x1="550" y1="348" x2="550" y2="385" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================================ -->
+  <!-- 优先级调度（顺序 if-else 链）                                 -->
+  <!-- ============================================================ -->
+  <rect x="250" y="385" width="600" height="34" rx="8" fill="#1e293b"/>
+  <text x="550" y="406" text-anchor="middle" fill="#f1f5f9" font-size="13" font-weight="bold">步骤 3: 优先级调度 — 顺序 if-else 链（源码: 232-246 行）</text>
+
+  <line x1="550" y1="419" x2="550" y2="455" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ 优先级1：处理当前参数 ============ -->
+  <rect x="50" y="455" width="480" height="145" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2" filter="url(#sh-card)"/>
+  <rect x="50" y="455" width="480" height="30" rx="10" fill="#2563eb"/>
+  <rect x="50" y="472" width="480" height="13" fill="#2563eb"/>
+  <text x="290" y="476" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">优先级 ① — process_current_param()</text>
+
+  <text x="65" y="510" fill="#1e40af" font-size="11">触发条件: current_tool_block_index &amp;&amp; current_param_name 均为 Some</text>
+  <text x="65" y="530" fill="#334155" font-size="11">操作逻辑:</text>
+  <text x="75" y="548" fill="#475569" font-size="10">▸ 检测累加器尾部是否包含 &lt;/参数名&gt;</text>
+  <text x="75" y="564" fill="#475569" font-size="10">  → 是: 截取参数值 → normalize → 存入 ToolUse.params → 清除 current_param_name</text>
+  <text x="75" y="580" fill="#475569" font-size="10">  → 否: 将当前内容作为部分值(partial)更新到 ToolUse.params</text>
+  <text x="75" y="596" fill="#475569" font-size="10">▸ 参数值超过 100 KiB → 静默丢弃参数（current_param_name ← None），返回 false</text>
+
+  <!-- 优先级1 处理后：continue 到下一字符 -->
+  <line x1="290" y1="600" x2="290" y2="660" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="305" y="635" fill="#2563eb" font-size="10" font-weight="bold">continue（回到字符循环）</text>
+
+  <!-- 参数超限后回落到优先级2 -->
+  <path d="M 50 565 Q 25 565 25 655" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-dasharray="6,3"/>
+  <text x="12" y="610" fill="#dc2626" font-size="8" transform="rotate(-90 12 610)">超限回落</text>
+
+  <!-- ============ 优先级2：处理当前工具 ============ -->
+  <rect x="260" y="530" width="480" height="135" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2" filter="url(#sh-card)"/>
+  <rect x="260" y="530" width="480" height="30" rx="10" fill="#059669"/>
+  <rect x="260" y="547" width="480" height="13" fill="#059669"/>
+  <text x="500" y="551" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">优先级 ② — process_current_tool()</text>
+
+  <text x="275" y="585" fill="#065f46" font-size="11">触发条件: current_tool_block_index 为 Some（且未命中优先级①）</text>
+  <text x="275" y="605" fill="#334155" font-size="11">操作逻辑:</text>
+  <text x="285" y="623" fill="#475569" font-size="10">▸ 检测累加器尾部是否包含 &lt;/工具名&gt;</text>
+  <text x="285" y="639" fill="#475569" font-size="10">  → 是: 标记 ToolUse.partial = false → 清除 current_tool_block_index → continue</text>
+  <text x="285" y="655" fill="#475569" font-size="10">▸ 扫描 &lt;参数名&gt; 开标签 → 有则设置 current_param_name</text>
+
+  <!-- 优先级2 处理后：continue 到下一字符 -->
+  <line x1="500" y1="665" x2="500" y2="710" stroke="#059669" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="515" y="692" fill="#059669" font-size="10" font-weight="bold">continue（回到字符循环）</text>
+
+  <!-- write_to_file 特殊处理标注 -->
+  <rect x="260" y="665" width="480" height="45" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="275" y="685" fill="#92400e" font-size="10" font-weight="bold">特殊处理 — write_to_file 工具:</text>
+  <text x="275" y="700" fill="#92400e" font-size="10">每当检测到 &lt;/content&gt; → 调用 refresh_write_to_file_content() 提取 &lt;content&gt;..&lt;/content&gt; 之间的内容</text>
+
+  <!-- ============ 优先级3 & 4：尝试开工具 / 处理文本 ============ -->
+  <line x1="550" y1="385" x2="550" y2="530" stroke="#94a3b8" stroke-width="1"/>
+  <text x="555" y="395" fill="#94a3b8" font-size="9">↓ 未命中①②</text>
+
+  <line x1="550" y1="710" x2="550" y2="750" stroke="#475569" stroke-width="2"/>
+  <text x="565" y="735" fill="#64748b" font-size="10" font-weight="bold">未命中②继续</text>
+
+  <!-- ============ 优先级3 & 4 合体 ============ -->
+  <rect x="260" y="750" width="480" height="155" rx="10" fill="#fefce8" stroke="#d97706" stroke-width="2" filter="url(#sh-card)"/>
+  <rect x="260" y="750" width="480" height="30" rx="10" fill="#d97706"/>
+  <rect x="260" y="767" width="480" height="13" fill="#d97706"/>
+  <text x="500" y="771" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">优先级 ③ → ④ — try_start_tool_use() / process_text()</text>
+
+  <text x="275" y="805" fill="#92400e" font-size="11" font-weight="bold">③ try_start_tool_use()  —  检测累加器尾部是否匹配 &lt;工具名&gt;</text>
+  <text x="285" y="825" fill="#475569" font-size="10">▸ 匹配: 校验工具名合法性 → 创建新 ToolUse(partial=true) → 推入 content_blocks</text>
+  <text x="285" y="841" fill="#475569" font-size="10">        如果之前有文本块 → 标记文本完结(partial=false) → 剥离末尾部分标签前缀 → 继续</text>
+  <text x="285" y="857" fill="#475569" font-size="10">        设置 current_tool_block_index → current_tool_use_start_index</text>
+
+  <text x="275" y="880" fill="#92400e" font-size="11" font-weight="bold">④ process_text()  —  以上均未命中时的兜底</text>
+  <text x="285" y="898" fill="#475569" font-size="10">▸ 已有文本块: 用累加器当前内容更新 text.content</text>
+  <text x="285" y="914" fill="#475569" font-size="10">▸ 无文本块: 创建新 TextContent(partial=true) → 推入 content_blocks</text>
+
+  <!-- ↓ -->
+  <line x1="550" y1="905" x2="550" y2="950" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 枚举结束 -->
+  <rect x="370" y="950" width="260" height="32" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>
+  <text x="500" y="971" text-anchor="middle" fill="#64748b" font-size="12">下一字符... 或 chunk 遍历完毕</text>
+
+  <!-- loop back -->
+  <path d="M 370 966 Q 240 966 240 870 Q 240 500 260 500" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="8,4" marker-end="url(#arrow)"/>
+  <text x="100" y="750" fill="#7c3aed" font-size="10" transform="rotate(-90 100 750)">循环回到下一字符</text>
+
+  <!-- 返回 -->
+  <line x1="550" y1="982" x2="550" y2="1020" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="280" y="1020" width="440" height="48" rx="10" fill="url(#ret)" filter="url(#sh)"/>
+  <text x="500" y="1041" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">返回 Ok( Vec&lt;ContentBlock&gt; )</text>
+  <text x="500" y="1058" text-anchor="middle" fill="#fef3c7" font-size="10">含有交织的 Text 和 ToolUse 块，部分块可能仍为 partial = true</text>
+
+  <!-- ============================================================ -->
+  <!-- 额外的数据流：流式显示                                        -->
+  <!-- ============================================================ -->
+  <rect x="30" y="1090" width="1040" height="145" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="550" y="1113" text-anchor="middle" fill="#334155" font-size="14" font-weight="bold">流式显示辅助通道 — next_text_chunk()</text>
+  <line x1="50" y1="1122" x2="1050" y2="1122" stroke="#cbd5e1"/>
+
+  <text x="50" y="1145" fill="#475569" font-size="11">① 调用 process_chunk() 投喂数据 → ② 循环调用 next_text_chunk() 获取安全可显示的文本增量</text>
+  <text x="50" y="1165" fill="#475569" font-size="11">③ 解析器会"扣留"可能是工具标签前缀的文本（如 "&lt;read_fil"），直到其确认是纯文本或工具标签才放行</text>
+  <text x="50" y="1185" fill="#475569" font-size="11">④ 通过 check_tool_prefix() 检测文本末尾是否匹配 default_tool_prefixes 中的任意前缀</text>
+  <text x="50" y="1205" fill="#475569" font-size="11">⑤ 流结束时调用 finalize_content_blocks() 将所有块标记为 partial=false，文本执行 trim()</text>
+  <text x="50" y="1225" fill="#475569" font-size="11">⑥ 调用 reset() 重置解析器状态，支持复用实例</text>
+</svg>
