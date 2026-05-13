@@ -5,7 +5,7 @@ Rust implementation of `src/examples/ai_chat_modular/experiments/assistant_messa
 The crate is intentionally small and wasm-friendly:
 
 - no filesystem, process, networking, thread, or timer APIs;
-- no runtime dependencies;
+- no native runtime dependencies; wasm builds use `js-sys` and `wasm-bindgen`;
 - parser state is incremental, so callers can feed streaming chunks without reparsing the full message externally;
 - library output uses owned Rust structs, with a `wasm-bindgen` wrapper for Node.js consumers.
 
@@ -18,14 +18,33 @@ The parser emits two content block variants:
 
 It follows the Python implementation closely:
 
-- text blocks are created while partial text streams in;
+- text blocks are created while partial text streams in, with leading/trailing whitespace trimmed from each text block;
 - recognized tool opening tags close the current text block and append a partial tool block immediately;
 - parameter values are updated during streaming;
 - non-`content` parameters are trimmed when their closing tag is seen;
 - `content` parameters preserve internal newlines and strip only one leading and one trailing newline;
 - `write_to_file` refreshes `content` from the last `</content>` so embedded `</content>` strings inside file content are preserved;
+- malformed or unknown XML-like tags stay in text instead of becoming tool blocks;
+- `finalize_content_blocks()` marks all blocks as complete and trims text blocks;
 - messages larger than 1 MiB return `ParserError::MessageTooLarge`;
 - parameter values larger than 100 KiB are abandoned gracefully, matching the Python parser's safe-state behavior.
+
+`AssistantMessageParser::default()` recognizes the default tool schema from `src/lib.rs`:
+
+| Tool | Parameters |
+| --- | --- |
+| `write_to_file` | `path`, `content`, `line_count` |
+| `update_todo_list` | `todos` |
+| `search_files` | `path`, `regex`, `file_pattern` |
+| `search_and_replace` | `path`, `search`, `replace`, `start_line`, `end_line`, `use_regex`, `ignore_case` |
+| `read_file` | `args` |
+| `list_files` | `path`, `recursive` |
+| `insert_content` | `path`, `line`, `content` |
+| `execute_command` | `command`, `cwd` |
+| `attempt_completion` | `result` |
+| `ask_followup_question` | `question`, `follow_up` |
+| `new_task` | `mode`, `message` |
+| `workflow_search` | `q`, `trigger`, `complexity`, `active_only`, `page`, `per_page` |
 
 ## Usage
 
@@ -51,10 +70,14 @@ For custom tools:
 ```rust
 use assistant_message_parser::AssistantMessageParser;
 
-let parser = AssistantMessageParser::new(
+let mut parser = AssistantMessageParser::new(
     Some(vec!["read_file".into(), "write_to_file".into()]),
     Some(vec!["path".into(), "content".into()]),
 );
+
+let blocks = parser
+    .process_chunk("<read_file><path>src/main.rs</path></read_file>")
+    .unwrap();
 ```
 
 ## Node.js Wasm Usage
@@ -83,7 +106,7 @@ console.log(blocks[0]);
 // }
 ```
 
-The wasm wrapper also exposes `reset()`, `getContentBlocks()`, `finalizeContentBlocks()`, and `nextTextChunk()`.
+Pass `undefined`/`null` for either constructor argument to use the Rust defaults for that list. The wasm wrapper also exposes `AssistantMessageParser.default()`, `reset()`, `getContentBlocks()`, `finalizeContentBlocks()`, and `nextTextChunk()`. `processChunk()` throws a JavaScript `Error` when the Rust parser returns `ParserError::MessageTooLarge`.
 
 ## Classic Streaming Case
 
@@ -137,7 +160,12 @@ assert_eq!(show_text, "I will inspect the file. Then I will search. Done.");
 assert_eq!(completed_tool_xml.len(), 2);
 ```
 
-`next_text_chunk()` intentionally holds back text that may still be the prefix of a tool tag, so UI display does not briefly show `<read_file` before the parser can decide whether it is plain text or a real tool call.
+`next_text_chunk()` intentionally holds back text that may still be the prefix of a tool tag, so UI display does not briefly show `<read_file` before the parser can decide whether it is plain text or a real tool call. It emits the accumulated text-only stream and joins separate text blocks with a single space.
+
+## Diagrams
+
+- `docs/processing-flow.svg` shows the per-character dispatch order inside `process_chunk()`.
+- `docs/state-machine.svg` shows the parser's implicit text, tool, and parameter states.
 
 ## Test
 

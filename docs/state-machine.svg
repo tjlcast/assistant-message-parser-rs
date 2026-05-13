@@ -244,5 +244,5 @@
   <text x="85" y="988" fill="#475569" font-size="10">▸ 工具开启 (③): try_start_tool_use() 会用 take() 关闭文本块 → current_text_block_index ← None → 进入 状态2</text>
   <text x="85" y="1006" fill="#475569" font-size="10">▸ 参数超限: process_current_param 返回 false → 不回 continue → 穿过 if 链 → 可能进入③/④ 分支（作为普通字符处理）</text>
 
-  <text x="550" y="1035" text-anchor="middle" fill="#94a3b8" font-size="10">源码: /Users/jialiangtang/code/assistant-message-parser-rs/src/lib.rs</text>
+  <text x="550" y="1035" text-anchor="middle" fill="#94a3b8" font-size="10">源码: src/lib.rs</text>
 </svg>
