@@ -15,3 +15,8 @@ crate-type = ["rlib", "cdylib"]
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 js-sys = "0.3"
 wasm-bindgen = "0.2"
+
+
+[dev-dependencies]
+# 默认会在 cargo test 时自动安装 hooks
+cargo-husky = { version = "1", default-features = false, features = ["user-hooks"] }

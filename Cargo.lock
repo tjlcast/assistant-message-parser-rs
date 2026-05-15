@@ -6,6 +6,7 @@ version = 4
 name = "assistant-message-parser"
 version = "0.1.0"
 dependencies = [
+ "cargo-husky",
  "js-sys",
  "wasm-bindgen",
 ]
@@ -15,6 +16,12 @@ name = "bumpalo"
 version = "3.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d20789868f4b01b2f2caec9f5c4e0213b41e3e5702a50157d699ae31ced2fcb"
+
+[[package]]
+name = "cargo-husky"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b02b629252fe8ef6460461409564e2c21d0c8e77e0944f3d189ff06c4e932ad"
 
 [[package]]
 name = "cfg-if"
